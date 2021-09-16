@@ -26,7 +26,7 @@ namespace ProductsApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Fornecedor>> GetFornecedor(int id)
+        public async Task<ActionResult<Fornecedor>> GetFornecedor(Guid id)
         {
             var fornecedor = await _fornecedorRepository.Get(id);
             if (fornecedor == null)
@@ -56,14 +56,14 @@ namespace ProductsApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteFornecedor(int id)
+        public async Task<ActionResult> DeleteFornecedor(Guid id)
         {
             await _fornecedorRepository.Delete(id);
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateFornecedor(int id, UpdateFornecedorDto updateFornecedorDto)
+        public async Task<ActionResult> UpdateFornecedor(Guid id, UpdateFornecedorDto updateFornecedorDto)
         {
             Fornecedor fornecedor = new()
             {

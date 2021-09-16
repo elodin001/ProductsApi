@@ -1,10 +1,15 @@
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProductsApi.Models
 {
     public class Fornecedor
     {
-        public int FornecedorId { get; set; }
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        public Guid FornecedorId { get; set; }
         public int CNPJ { get; set; }
         public string RazaoSocial { get; set; }
         public string NomeFantasia { get; set; }

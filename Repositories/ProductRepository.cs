@@ -21,7 +21,7 @@ namespace ProductsApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(Guid id)
         {
             var itemToRemove = await _context.Products.FindAsync(id);
             if (itemToRemove == null)
@@ -31,7 +31,7 @@ namespace ProductsApi.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Product> Get(int id)
+        public async Task<Product> Get(Guid id)
         {
             return await _context.Products.FindAsync(id);
         }

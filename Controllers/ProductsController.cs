@@ -26,7 +26,7 @@ namespace ProductsApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<Product>> GetProduct(Guid id)
         {
             var product = await _productRepository.Get(id);
             if (product == null)
@@ -54,14 +54,14 @@ namespace ProductsApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteProduct(int id)
+        public async Task<ActionResult> DeleteProduct(Guid id)
         {
             await _productRepository.Delete(id);
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateProduct(int id, UpdateProductDto updateProductDto)
+        public async Task<ActionResult> UpdateProduct(Guid id, UpdateProductDto updateProductDto)
         {
             Product product = new()
             {
