@@ -8,7 +8,7 @@ namespace ProductsApi.Models
     public class Fornecedor
     {
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
+        //[Key]
         public Guid FornecedorId { get; set; }
         public int CNPJ { get; set; }
         public string RazaoSocial { get; set; }
@@ -19,6 +19,6 @@ namespace ProductsApi.Models
         public int CEP { get; set; }
         public int Telefone { get; set; }
         public string Email { get; set; }
-        public ICollection<ProdutoFornecedor> ProdutoFornecedores { get; set; }
+        public ICollection<Product> Products { get; set; }
     }
 }

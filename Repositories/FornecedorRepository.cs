@@ -38,7 +38,7 @@ namespace ProductsApi.Repositories
 
         public async Task<IEnumerable<Fornecedor>> GetAll()
         {
-            return await _context.Fornecedores.ToListAsync();
+            return await _context.Fornecedores.Include(f => f.Products).ToListAsync();
         }
 
         public async Task Update(Fornecedor fornecedor)

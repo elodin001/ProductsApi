@@ -45,8 +45,6 @@ namespace ProductsApi.Controllers
                 Preco = createProductDto.Preco,
                 Quantidade = createProductDto.Quantidade,
                 Categoria = createProductDto.Categoria
-
-                //DateCreated = DateTime.Now
             };
 
             await _productRepository.Add(product);

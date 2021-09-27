@@ -9,6 +9,8 @@ namespace ProductsApi.Data
     {
         DbSet<Product> Products { get; init; }
         DbSet<Fornecedor> Fornecedores { get; init; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        //Task<int> AddAsync(Product product);
     }
 }
