@@ -33,6 +33,7 @@ namespace ProductsApi
             services.AddScoped<IDataContext>(provider => provider.GetService<DataContext>());
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IFornecedorRepository, FornecedorRepository>();
+            services.AddScoped<ITesteRepository, TesteRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
