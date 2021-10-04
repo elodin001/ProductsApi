@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductsApi.Dtos;
 using ProductsApi.Models;
 using ProductsApi.Repositories;
+using ProductsApi.Services;
 
 namespace ProductsApi.Controllers
 {
@@ -12,32 +13,26 @@ namespace ProductsApi.Controllers
     [Route("[controller]")]
     public class TesteController : ControllerBase
     {
-        private readonly ITesteRepository _testeRepository;
-        private readonly IProductRepository _productRepository;
-        private readonly IFornecedorRepository _fornecedorRepository;
-        public TesteController(ITesteRepository testeRepository, IProductRepository productRepository, IFornecedorRepository fornecedorRepository)
+        private readonly ITesteService _testeService;
+
+        public TesteController(ITesteService testeService)
         {
-            _testeRepository = testeRepository;
-            _productRepository = productRepository;
-            _fornecedorRepository = fornecedorRepository;
+            _testeService = testeService;
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateTeste(CreateTesteDto createTesteDto)
         {
-            Product product = await _productRepository.Get(createTesteDto.ProductId);
-            Fornecedor fornecedor = await _fornecedorRepository.Get(createTesteDto.FornecedorId);
+            var resultado = await _testeService.Add(createTesteDto);
 
-            ProdutoFornecedor produtoFornecedor = new()
+            if(resultado.Ok)
             {
-                ProductId = createTesteDto.ProductId,
-                Product = product,
-                FornecedorId = createTesteDto.FornecedorId,
-                Fornecedor = fornecedor
-            };
-
-            await _testeRepository.Add(produtoFornecedor);
-            return Ok();
+                return Created(string.Empty, resultado.Data);
+            }
+            else
+            {
+                return BadRequest(resultado.Errors);
+            }
         }
     }
 }

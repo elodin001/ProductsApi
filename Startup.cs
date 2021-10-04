@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ProductsApi.Data;
 using Microsoft.EntityFrameworkCore;
+using ProductsApi.Services;
 using ProductsApi.Repositories;
 
 namespace ProductsApi
@@ -33,6 +34,7 @@ namespace ProductsApi
             services.AddScoped<IDataContext>(provider => provider.GetService<DataContext>());
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IFornecedorRepository, FornecedorRepository>();
+            services.AddScoped<ITesteService, TesteService>();
             services.AddScoped<ITesteRepository, TesteRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
