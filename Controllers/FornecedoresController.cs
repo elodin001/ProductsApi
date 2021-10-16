@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using productsApi.Services;
 using ProductsApi.Dtos;
 using ProductsApi.Models;
-using ProductsApi.Repositories;
 
 namespace ProductsApi.Controllers
 {
@@ -12,75 +13,86 @@ namespace ProductsApi.Controllers
     [Route("[controller]")]
     public class FornecedoresController : ControllerBase
     {
-        private readonly IFornecedorRepository _fornecedorRepository;
-        public FornecedoresController(IFornecedorRepository fornecedorRepository)
+        private readonly IFornecedorService _fornecedorService;
+        public FornecedoresController(IFornecedorService fornecedorService)
         {
-            _fornecedorRepository = fornecedorRepository;
+            _fornecedorService = fornecedorService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Fornecedor>>> GetFornecedores()
         {
-            var fornecedor = await _fornecedorRepository.GetAll();
-            return Ok(fornecedor);
+            var resultado = await _fornecedorService.GetAll();
+            if (resultado.Ok)
+            {
+                return Ok(resultado.Data);
+            }
+            return StatusCode(500, resultado.Errors);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Fornecedor>> GetFornecedor(Guid id)
         {
-            var fornecedor = await _fornecedorRepository.Get(id);
-            if (fornecedor == null)
-                return NotFound();
-
-            return Ok(fornecedor);
+            var resultado = await _fornecedorService.Get(id);
+            if (resultado.Ok)
+            {
+                return Ok(resultado.Data);
+            }
+            return StatusCode(500, resultado.Errors);
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateFornecedor(CreateFornecedorDto createFornecedorDto)
         {
-            Fornecedor fornecedor = new()
+            if (ModelState.IsValid)
             {
-                CNPJ = createFornecedorDto.CNPJ,
-                RazaoSocial = createFornecedorDto.RazaoSocial,
-                NomeFantasia = createFornecedorDto.NomeFantasia,
-                Endereco = createFornecedorDto.Endereco,
-                Cidade = createFornecedorDto.Cidade,
-                Estado = createFornecedorDto.Estado,
-                CEP = createFornecedorDto.CEP,
-                Telefone = createFornecedorDto.Telefone,
-                Email = createFornecedorDto.Email
-            };
 
-            await _fornecedorRepository.Add(fornecedor);
-            return Ok();
+                var resultado = await _fornecedorService.Add(createFornecedorDto);
+
+                if (resultado.Ok)
+                {
+                    //return Created(string.Empty, resultado.Data);
+                    return CreatedAtAction(this.ControllerContext.ActionDescriptor.ActionName, createFornecedorDto);
+                }
+                else
+                {
+                    return BadRequest(resultado.Errors);
+                }
+            }
+
+            return BadRequest(ModelState.Values.SelectMany(p => p.Errors)?.Select(j => j.ErrorMessage));
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteFornecedor(Guid id)
         {
-            await _fornecedorRepository.Delete(id);
-            return Ok();
+            var resultado = await _fornecedorService.Delete(id);
+
+            if (resultado.Ok)
+            {
+                return Created(string.Empty, resultado.Data);
+            }
+            else
+            {
+                return BadRequest(resultado.Errors);
+            }
+
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateFornecedor(Guid id, UpdateFornecedorDto updateFornecedorDto)
         {
-            Fornecedor fornecedor = new()
-            {
-                FornecedorId = id,
-                CNPJ = updateFornecedorDto.CNPJ,
-                RazaoSocial = updateFornecedorDto.RazaoSocial,
-                NomeFantasia = updateFornecedorDto.NomeFantasia,
-                Endereco = updateFornecedorDto.Endereco,
-                Cidade = updateFornecedorDto.Cidade,
-                Estado = updateFornecedorDto.Estado,
-                CEP = updateFornecedorDto.CEP,
-                Telefone = updateFornecedorDto.Telefone,
-                Email = updateFornecedorDto.Email
-            };
+            var FornecedorId = id;
+            var resultado = await _fornecedorService.Update(id, updateFornecedorDto);
 
-            await _fornecedorRepository.Update(fornecedor);
-            return Ok();
+            if (resultado.Ok)
+            {
+                return Created(string.Empty, resultado.Data);
+            }
+            else
+            {
+                return BadRequest(resultado.Errors);
+            }
         }
     }
 }

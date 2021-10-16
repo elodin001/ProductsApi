@@ -1,3 +1,5 @@
+using System;
+
 namespace ProductsApi.Dtos
 {
     public class UpdateProductDto

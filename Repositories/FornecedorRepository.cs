@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProductsApi.Data;
+using ProductsApi.Dtos;
 using ProductsApi.Models;
 
 namespace ProductsApi.Repositories
@@ -15,17 +16,33 @@ namespace ProductsApi.Repositories
             _context = context;
 
         }
-        public async Task Add(Fornecedor fornecedor)
+        public async Task Add(CreateFornecedorDto createFornecedorDto)
         {
+            Fornecedor fornecedor = new()
+            {
+                CNPJ = createFornecedorDto.CNPJ,
+                RazaoSocial = createFornecedorDto.RazaoSocial,
+                NomeFantasia = createFornecedorDto.NomeFantasia,
+                Endereco = createFornecedorDto.Endereco,
+                Cidade = createFornecedorDto.Cidade,
+                Estado = createFornecedorDto.Estado,
+                CEP = createFornecedorDto.CEP,
+                Telefone = createFornecedorDto.Telefone,
+                Email = createFornecedorDto.Email
+            };
+
             _context.Fornecedores.Add(fornecedor);
             await _context.SaveChangesAsync();
+
         }
 
         public async Task Delete(Guid id)
         {
             var itemToRemove = await _context.Fornecedores.FindAsync(id);
             if (itemToRemove == null)
+            {
                 throw new NullReferenceException();
+            }
 
             _context.Fornecedores.Remove(itemToRemove);
             await _context.SaveChangesAsync();

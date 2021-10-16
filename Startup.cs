@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ProductsApi.Data;
 using Microsoft.EntityFrameworkCore;
 using ProductsApi.Repositories;
+using productsApi.Repositories;
+using productsApi.Services;
+using fornecedorsApi.Services;
+using System.Text.Json.Serialization;
 
 namespace ProductsApi
 {
@@ -33,7 +30,13 @@ namespace ProductsApi
             services.AddScoped<IDataContext>(provider => provider.GetService<DataContext>());
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IFornecedorRepository, FornecedorRepository>();
+            services.AddScoped<IProdutoFornecedorRepository, ProdutoFornecedorRepository>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IFornecedorService, FornecedorService>();
+            services.AddScoped<IProdutoFornecedorService, ProdutoFornecedorService>();
             services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProductsApi", Version = "v1" });

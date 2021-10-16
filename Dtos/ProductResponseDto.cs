@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using ProductsApi.Models;
 
-namespace ProductsApi.Dtos
+namespace productsApi.Dtos
 {
-    public class CreateProductDto
+    public class ProductResponseDto
     {
+        public Guid ProductId { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public decimal Preco { get; set; }
         public int Quantidade { get; set; }
         public string Categoria { get; set; }
-        public Guid Fornecedor { get; set; }
-        //public IEnumerable<Guid> FornecedoresIds { get; set; }
 
+        //[JsonIgnore]
+        public List<Fornecedor> Fornecedores { get; set; }
     }
 }

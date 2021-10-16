@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProductsApi.Data;
@@ -9,9 +10,10 @@ using ProductsApi.Data;
 namespace ProductsApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211015133258_001")]
+    partial class _001
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,6 +48,9 @@ namespace ProductsApi.Migrations
                     b.Property<string>("NomeFantasia")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("RazaoSocial")
                         .HasColumnType("text");
 
@@ -53,6 +58,8 @@ namespace ProductsApi.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("FornecedorId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Fornecedores");
                 });
@@ -98,6 +105,13 @@ namespace ProductsApi.Migrations
                     b.ToTable("ProdutoFornecedores");
                 });
 
+            modelBuilder.Entity("ProductsApi.Models.Fornecedor", b =>
+                {
+                    b.HasOne("ProductsApi.Models.Product", null)
+                        .WithMany("Fornecedores")
+                        .HasForeignKey("ProductId");
+                });
+
             modelBuilder.Entity("ProductsApi.Models.ProdutoFornecedor", b =>
                 {
                     b.HasOne("ProductsApi.Models.Fornecedor", "Fornecedor")
@@ -124,6 +138,8 @@ namespace ProductsApi.Migrations
 
             modelBuilder.Entity("ProductsApi.Models.Product", b =>
                 {
+                    b.Navigation("Fornecedores");
+
                     b.Navigation("ProdutoFornecedores");
                 });
 #pragma warning restore 612, 618

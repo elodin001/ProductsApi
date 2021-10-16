@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using productsApi.Services;
 using ProductsApi.Dtos;
 using ProductsApi.Models;
-using ProductsApi.Repositories;
 
 namespace ProductsApi.Controllers
 {
@@ -12,70 +14,133 @@ namespace ProductsApi.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
-        public ProductsController(IProductRepository productRepository)
+        private readonly IProductService _productService;
+        private readonly ILogger<ProductsController> _logger;
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
         {
-            _productRepository = productRepository;
+            _productService = productService;
+            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            var products = await _productRepository.GetAll();
-            return Ok(products);
+            var resultado = await _productService.GetAll();
+            if (resultado.Ok)
+            {
+                return Ok(resultado.Data);
+            }
+            return StatusCode(500, resultado.Errors);
+
+            /*var resultado = await _productService.GetAll();
+
+            if (resultado.Ok)
+            {
+                return Ok(resultado);
+            }
+            return StatusCode(500, resultado.Errors);*/
+
+
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(Guid id)
+        public async Task<ActionResult> GetProduct(Guid id)
         {
-            var product = await _productRepository.Get(id);
-            if (product == null)
-                return NotFound();
+            var resultado = await _productService.Get(id);
+            if (resultado.Ok)
+            {
+                return Ok(resultado.Data);
+            }
+            return StatusCode(500, resultado.Errors);
 
-            return Ok(product);
+            /* if (resultado.Ok)
+             {
+                 return Created(string.Empty, resultado.Data);
+             }
+             else
+             {
+                 return StatusCode(500, resultado.Errors);
+             }*/
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateProduct(CreateProductDto createProductDto)
         {
-            Product product = new()
+
+            if (ModelState.IsValid)
             {
-                Nome = createProductDto.Nome,
-                Descricao = createProductDto.Descricao,
-                Preco = createProductDto.Preco,
-                Quantidade = createProductDto.Quantidade,
-                Categoria = createProductDto.Categoria
+                var resultado = await _productService.Add(createProductDto);
 
-                //DateCreated = DateTime.Now
-            };
+                if (resultado.Ok)
+                {
+                    //return Created(string.Empty, resultado.Data);
+                    return CreatedAtAction(this.ControllerContext.ActionDescriptor.ActionName, createProductDto);
+                }
+                else
+                {
+                    return BadRequest(resultado.Errors);
+                }
+            }
 
-            await _productRepository.Add(product);
-            return Ok();
+            return BadRequest(ModelState.Values.SelectMany(p => p.Errors)?.Select(j => j.ErrorMessage));
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
-            await _productRepository.Delete(id);
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                var resultado = await _productService.Delete(id);
+
+                if (resultado.Ok)
+                {
+                    return NoContent();
+                }
+                return StatusCode(500, resultado.Errors);
+            }
+            return BadRequest(ModelState.Values.SelectMany(p => p.Errors)?.Select(j => j.ErrorMessage));
+
+
+            //await _productService.Delete(id);
+            //return Ok();
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProduct(Guid id, UpdateProductDto updateProductDto)
         {
-            Product product = new()
+            if (ModelState.IsValid)
             {
-                ProductId = id,
-                Nome = updateProductDto.Nome,
-                Descricao = updateProductDto.Descricao,
-                Preco = updateProductDto.Preco,
-                Quantidade = updateProductDto.Quantidade,
-                Categoria = updateProductDto.Categoria
+                Product product = new()
+                {
+                    Nome = updateProductDto.Nome,
+                    Descricao = updateProductDto.Descricao,
+                    Preco = updateProductDto.Preco,
+                    Quantidade = updateProductDto.Quantidade,
+                    Categoria = updateProductDto.Categoria
+                };
 
-            };
+                var resultado = await _productService.Update(id, updateProductDto);
 
-            await _productRepository.Update(product);
-            return Ok();
+                if (resultado.Ok)
+                {
+                    return NoContent();
+                }
+                return BadRequest(resultado.Errors);
+            }
+            return BadRequest(ModelState.Values.SelectMany(p => p.Errors)?.Select(j => j.ErrorMessage));
         }
     }
+
+    /*var ProductId = id;
+    var resultado = await _productService.Update(id, updateProductDto);
+
+    if (resultado.Ok)
+    {
+        return Created(string.Empty, resultado.Data);
+    }
+    else
+    {
+        return BadRequest(resultado.Errors);
+    }*/
 }
+

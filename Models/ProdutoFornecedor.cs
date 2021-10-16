@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace ProductsApi.Models
 {
@@ -8,5 +9,6 @@ namespace ProductsApi.Models
         public Product Product { get; set; }
         public Guid FornecedorId { get; set; }
         public Fornecedor Fornecedor { get; set; }
+        //public virtual ICollection<Fornecedor> Fornecedores { get; set; }
     }
 }
