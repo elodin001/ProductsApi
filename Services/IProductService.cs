@@ -10,7 +10,7 @@ namespace productsApi.Services
 {
     public interface IProductService
     {
-        Task<ServiceResult<ProductResponseDto>> Get(Guid id);
+        Task<ProductResponseDto> Get(Guid id);
         Task<ServiceResult<IEnumerable<Product>>> GetAll();
         Task<ServiceResult<Product>> Add(CreateProductDto createProductDto);
         Task<ServiceResult<Product>> Delete(Guid id);

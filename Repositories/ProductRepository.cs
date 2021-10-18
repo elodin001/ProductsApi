@@ -20,18 +20,6 @@ namespace ProductsApi.Repositories
         }
         public async Task Add(CreateProductDto createProductDto)
         {
-            /*var fornecedoresIds = _context.Fornecedores.Select(f => f.FornecedorId);
-
-            var fornecedores = await _context.ProdutoFornecedores
-                .Where(f => fornecedoresIds.Contains(f.FornecedorId))
-                .ToListAsync();
-
-            if (fornecedores.Count < 1)
-            {
-                throw new ArgumentException("IDs de fornecedores inválidos.");
-            }
-
-            product.ProdutoFornecedores = fornecedores;*/
             Product product = new()
             {
                 Nome = createProductDto.Nome,
@@ -39,9 +27,6 @@ namespace ProductsApi.Repositories
                 Preco = createProductDto.Preco,
                 Quantidade = createProductDto.Quantidade,
                 Categoria = createProductDto.Categoria,
-                /*ProdutoFornecedores = createProductDto.FornecedoresIds
-           .Select(i => new ProdutoFornecedor() { FornecedorId = i })
-           .ToList()*/
             };
 
             _context.Products.Add(product);
@@ -53,11 +38,8 @@ namespace ProductsApi.Repositories
                 FornecedorId = createProductDto.Fornecedor,
             };
 
-
             _context.ProdutoFornecedores.Add(produtoFornecedor);
             await _context.SaveChangesAsync();
-
-
 
         }
 
@@ -74,45 +56,8 @@ namespace ProductsApi.Repositories
         public async Task<Product> Get(Guid id)
         {
 
-            /*var ProdutosList = _context.Products.Join(_context.ProdutoFornecedores, p => p.ProductId, f => f.FornecedorId,
-            (p, f) => new { p, f })
-            .Where(j => j.f.ProductId == id).ToList();*/
-
-
-
-            /*var produto = await _context.Products.FirstOrDefaultAsync(t => t.ProductId == id);
-            var fornecedoresIds = await _context.ProdutoFornecedores.Where(pf => pf.ProductId == produto.ProductId).Select(pf => pf.FornecedorId).ToListAsync();
-            //var fornecedores = await _context.Fornecedores.Where(r => r.FornecedorId == produtoFornecedores.FornecedorId).ToListAsync();
-            var fornecedores = await _context.Fornecedores
-                  .Where(f => fornecedoresIds.Contains(f.FornecedorId))
-                  .ToListAsync();
-            //   return (produto, fornecedores);*/
-
-            /*var produto = await  _context.Products.Where(p => p.ProductId == id)
-            .Include(prod => prod.ProdutoFornecedores)
-            .ThenInclude(prod => prod.Fornecedor).Where(prod => prod.ProductId == id)
-            .ToListAsync();*/
-
-            /*var produto = await _context.Products
-        .Include(p => p.Fornecedores)
-        .Where(u => u.ProductId == id)
-        .ToListAsync();*/
-
-            /*var produto = await _context.Products
-            .Include(x => x.ProdutoFornecedores)
-            .ThenInclude(y => y.Fornecedor)
-            .SingleOrDefaultAsync(m => m.ProductId == id);*/
-
-            /*return await _context.Products
-            .Include(pf => pf.ProdutoFornecedores)
-            .ThenInclude(pf => pf.Fornecedor)
-            .Where(pf => pf.ProductId == id)
-            .ToListAsync();*/
-
-
-
-
             return await _context.Products.FindAsync(id);
+
         }
 
         public async Task<IEnumerable<Product>> GetAll()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using productsApi.Dtos;
 using productsApi.Services;
 using ProductsApi.Dtos;
 using ProductsApi.Models;
@@ -44,14 +45,15 @@ namespace ProductsApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetProduct(Guid id)
+        public async Task<ProductResponseDto> GetProduct(Guid id)
         {
             var resultado = await _productService.Get(id);
-            if (resultado.Ok)
+            return resultado;
+            /*if (resultado.Ok)
             {
                 return Ok(resultado.Data);
             }
-            return StatusCode(500, resultado.Errors);
+            return StatusCode(500, resultado.Errors);*/
 
             /* if (resultado.Ok)
              {

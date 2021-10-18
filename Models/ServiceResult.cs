@@ -14,6 +14,7 @@ namespace productsApi.Models
             {
                 errors = new List<string>();
             }
+
             Ok = ok;
             Errors = errors;
             Data = data;

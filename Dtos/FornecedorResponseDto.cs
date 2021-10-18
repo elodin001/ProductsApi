@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+using ProductsApi.Models;
 
-namespace ProductsApi.Models
+namespace productsApi.Dtos
 {
-    public class Fornecedor
+    public class FornecedorResponseDto
     {
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
         public Guid FornecedorId { get; set; }
         public int CNPJ { get; set; }
         public string RazaoSocial { get; set; }
@@ -19,8 +16,6 @@ namespace ProductsApi.Models
         public int CEP { get; set; }
         public int Telefone { get; set; }
         public string Email { get; set; }
-
-        [JsonIgnore]
-        public ICollection<ProdutoFornecedor> ProdutoFornecedores { get; set; }
+        public List<Product> Produtos { get; set; }
     }
 }

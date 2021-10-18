@@ -36,5 +36,15 @@ namespace ProductsApi.Repositories
             _context.ProdutoFornecedores.Remove(itemToRemove);
             await _context.SaveChangesAsync();
         }
+
+        public async Task Delete(Guid[] id)
+        {
+            var itemToRemove = await _context.ProdutoFornecedores.FindAsync(id[0], id[1]);
+            if (itemToRemove == null)
+                throw new NullReferenceException();
+
+            _context.ProdutoFornecedores.Remove(itemToRemove);
+            await _context.SaveChangesAsync();
+        }
     }
 }

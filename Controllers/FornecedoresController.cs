@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using productsApi.Dtos;
 using productsApi.Services;
 using ProductsApi.Dtos;
 using ProductsApi.Models;
@@ -31,14 +32,15 @@ namespace ProductsApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Fornecedor>> GetFornecedor(Guid id)
+        public async Task<FornecedorResponseDto> GetFornecedor(Guid id)
         {
             var resultado = await _fornecedorService.Get(id);
-            if (resultado.Ok)
+            return resultado;
+            /*if (resultado.Ok)
             {
                 return Ok(resultado.Data);
             }
-            return StatusCode(500, resultado.Errors);
+            return StatusCode(500, resultado.Errors);*/
         }
 
         [HttpPost]

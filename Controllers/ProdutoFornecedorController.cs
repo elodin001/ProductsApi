@@ -20,7 +20,7 @@ namespace ProductsApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateProdutoProdutoFornecedor(CreateProdutoFornecedorDto createProdutoProdutoFornecedorDto)
+        public async Task<ActionResult> CreateProdutoFornecedor(CreateProdutoFornecedorDto createProdutoProdutoFornecedorDto)
         {
             if (ModelState.IsValid)
             {
@@ -52,5 +52,25 @@ namespace ProductsApi.Controllers
             return StatusCode(500, resultado.Errors);
         }
 
+        [HttpDelete("{id1}&&{id2}")]
+        public async Task<ActionResult> DeleteProdutoFornecedor(Guid id1, Guid id2)
+        {
+            Guid[] id = new Guid[] { id1, id2 };
+            if (ModelState.IsValid)
+            {
+                var resultado = await _produtoFornecedorService.Delete(id);
+
+                if (resultado.Ok)
+                {
+                    return NoContent();
+                }
+                return StatusCode(500, resultado.Errors);
+            }
+            return BadRequest(ModelState.Values.SelectMany(p => p.Errors)?.Select(j => j.ErrorMessage));
+
+
+            //await _productService.Delete(id);
+            //return Ok();
+        }
     }
 }

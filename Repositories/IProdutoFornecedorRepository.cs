@@ -10,7 +10,7 @@ namespace productsApi.Repositories
         //Task<ProdutoFornecedor> Get(Guid id);
         Task<IEnumerable<ProdutoFornecedor>> GetAll();
         Task Add(ProdutoFornecedor produtoFornecedor);
-        //Task Delete(Guid keyId1, Guid keyId2);
+        Task Delete(Guid[] id);
         //Task Update(Product product);
     }
 }

@@ -12,7 +12,7 @@ namespace productsApi.Services
         Task<ServiceResult<ProdutoFornecedor>> Add(CreateProdutoFornecedorDto createProdutoFornecedorDto);
         //Task<ServiceResult<ProdutoFornecedor>> Get(Guid id);
         Task<ServiceResult<IEnumerable<ProdutoFornecedor>>> GetAll();
-        //Task<ServiceResult<ProdutoFornecedor>> Delete(Guid id, Guid id2);
+        Task<ServiceResult<ProdutoFornecedor>> Delete(Guid[] id);
         //Task<ServiceResult<ProdutoFornecedor>> Update(Guid id, UpdateProdutoFornecedorDto updateProdutoFornecedorDto);
     }
 }

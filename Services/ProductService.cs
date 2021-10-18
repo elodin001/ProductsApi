@@ -7,7 +7,6 @@ using Npgsql;
 using productsApi.Dtos;
 using productsApi.Models;
 using productsApi.Repositories;
-using ProductsApi.Data;
 using ProductsApi.Dtos;
 using ProductsApi.Models;
 using ProductsApi.Repositories;
@@ -21,80 +20,72 @@ namespace productsApi.Services
         private readonly IProdutoFornecedorRepository _produtoFornecedorRepository;
         private readonly ILogger<ProductService> _logger;
 
-        private readonly IDataContext _context;
-
-        public ProductService(IProductRepository productRepository, IFornecedorRepository fornecedorRepository, IProdutoFornecedorRepository produtoFornecedorRepository, ILogger<ProductService> logger, IDataContext context)
+        public ProductService(IProductRepository productRepository, IFornecedorRepository fornecedorRepository, IProdutoFornecedorRepository produtoFornecedorRepository, ILogger<ProductService> logger)
         {
             _productRepository = productRepository;
             _fornecedorRepository = fornecedorRepository;
             _produtoFornecedorRepository = produtoFornecedorRepository;
             _logger = logger;
-            _context = context;
         }
 
-        public async Task<ServiceResult<ProductResponseDto>> Get(Guid id)
+        public async Task<ProductResponseDto> Get(Guid id)
         {
-            //try
-            //{
-            var produto = await _productRepository.Get(id);
-
-            var getProdFor = await _produtoFornecedorRepository.GetAll();
-            var prodFor = getProdFor
-            .Where(pf => pf.ProductId == id)
-            .ToList();
-
-            var getFornecedores = await _fornecedorRepository.GetAll();
-            var fornecedores = getFornecedores
-            .ToList();
-
-
-            var forn = new List<Fornecedor>();
-
-            foreach (ProdutoFornecedor PF in prodFor)
+            try
             {
-                foreach (Fornecedor F in fornecedores)
+                var produto = await _productRepository.Get(id);
+
+                var getProdFor = await _produtoFornecedorRepository.GetAll();
+                var prodFor = getProdFor
+                .Where(pf => pf.ProductId == id)
+                .ToList();
+
+                var getFornecedores = await _fornecedorRepository.GetAll();
+                var fornecedores = getFornecedores
+                .ToList();
+
+
+                var forn = new List<Fornecedor>();
+
+                foreach (ProdutoFornecedor PF in prodFor)
                 {
-                    if (PF.FornecedorId == F.FornecedorId)
+                    foreach (Fornecedor F in fornecedores)
                     {
-                        forn.Add(F);
+                        if (PF.FornecedorId == F.FornecedorId)
+                        {
+                            F.ProdutoFornecedores = null;
+                            forn.Add(F);
+                        }
                     }
                 }
+
+
+
+                ProductResponseDto productResponseDto = new()
+                {
+                    ProductId = produto.ProductId,
+                    Nome = produto.Nome,
+                    Descricao = produto.Descricao,
+                    Preco = produto.Preco,
+                    Quantidade = produto.Quantidade,
+                    Categoria = produto.Categoria,
+                    Fornecedores = forn
+                };
+
+                return productResponseDto;
+
             }
-
-
-
-            ProductResponseDto productResponseDto = new()
-            {
-                ProductId = produto.ProductId,
-                Nome = produto.Nome,
-                Descricao = produto.Descricao,
-                Preco = produto.Preco,
-                Quantidade = produto.Quantidade,
-                Categoria = produto.Categoria,
-                Fornecedores = forn
-            };
-
-            /*string queryProduto = $@"SELECT * FROM Product p WHERE p.ProductId = '{id}' 
-            LEFT OUTER JOIN ProdutoFornecedores pf ON p.ProductId = pf.ProductId 
-            LEFT OUTER JOIN Fornecedores f ON pf.FornecedorId = f.FornecedorId";*/
-
-
-            //CreateProductDto createProductDto = new CreateProductDto();
-
-            return new ServiceResult<ProductResponseDto>(true, data: productResponseDto);
-            //}
-            /*catch (PostgresException ex)
+            catch (PostgresException ex)
             {
                 var erro = "Ocorreu um erro inesperado, no banco, ao tentar obter o produto";
                 _logger.LogError(ex, erro);
-                return new ServiceResult<ProductResponseDto>(false, new String[1] { erro });
+                throw new ArgumentException(erro, ex);
             }
             catch (System.Exception ex)
             {
                 var erro = "Ocorreu um erro inesperado ao tentar obter o produto";
                 _logger.LogError(ex, erro);
-                return new ServiceResult<ProductResponseDto>(false, new String[1] { erro });
-            }*/
+                throw new ArgumentException(erro, ex);
+            }
         }
 
         public async Task<ServiceResult<Product>> Add(CreateProductDto createProductDto)

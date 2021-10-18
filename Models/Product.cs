@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ProductsApi.Models
 {
@@ -13,10 +14,9 @@ namespace ProductsApi.Models
         public decimal Preco { get; set; }
         public int Quantidade { get; set; }
         public string Categoria { get; set; }
-        //public List<Fornecedor> Fornecedores { get; set; }
-        public ICollection<ProdutoFornecedor> ProdutoFornecedores { get; set; }
 
-        //public DateTime DateCreated { get; set; }
+        [JsonIgnore]
+        public ICollection<ProdutoFornecedor> ProdutoFornecedores { get; set; }
 
     }
 }

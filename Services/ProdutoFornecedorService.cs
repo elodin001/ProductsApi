@@ -37,7 +37,7 @@ namespace productsApi.Services
                 ProdutoFornecedor produtoFornecedor = new()
                 {
                     ProductId = createProdutoFornecedorDto.ProductId,
-                    Product = product,
+                    //Product = product,
                     FornecedorId = createProdutoFornecedorDto.FornecedorId,
                     Fornecedor = fornecedor
                 };
@@ -67,6 +67,29 @@ namespace productsApi.Services
             var produtoFornecedor = await _produtoFornecedorRepository.GetAll();
 
             return new ServiceResult<IEnumerable<ProdutoFornecedor>>(true, data: produtoFornecedor);
+        }
+
+        public async Task<ServiceResult<ProdutoFornecedor>> Delete(Guid[] id)
+        {
+            try
+            {
+                var taskRepository = _produtoFornecedorRepository.Delete(id);
+                await taskRepository;
+
+                return new ServiceResult<ProdutoFornecedor>(true);
+            }
+            catch (PostgresException ex)
+            {
+                var erro = "Ocorreu um erro inesperado, no banco, ao obter o ProdutoFornecedor";
+                _logger.LogError(ex, erro);
+                return new ServiceResult<ProdutoFornecedor>(false, new String[1] { erro });
+            }
+            catch (System.Exception ex)
+            {
+                var erro = "Ocorreu um erro inesperado ao obter o ProdutoFornecedor";
+                _logger.LogError(ex, erro);
+                return new ServiceResult<ProdutoFornecedor>(false, new String[1] { erro });
+            }
         }
 
     }

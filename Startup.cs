@@ -35,8 +35,8 @@ namespace ProductsApi
             services.AddScoped<IFornecedorService, FornecedorService>();
             services.AddScoped<IProdutoFornecedorService, ProdutoFornecedorService>();
             services.AddControllers();
-            services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            /*services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);*/
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProductsApi", Version = "v1" });
